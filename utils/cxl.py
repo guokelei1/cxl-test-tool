@@ -8,6 +8,13 @@ RP1="-object memory-backend-file,id=cxl-mem1,share=on,mem-path=/tmp/cxltest.raw,
      -device cxl-type3,bus=root_port13,memdev=cxl-mem1,lsa=cxl-lsa1,id=cxl-pmem0,sn=0xabcd \
      -M cxl-fmw.0.targets.0=cxl.1,cxl-fmw.0.size=4G,cxl-fmw.0.interleave-granularity=8k"
 
+VM1="-object memory-backend-ram,id=vmem0,share=on,size=4G \
+     -device pxb-cxl,bus_nr=12,bus=pcie.0,id=cxl.1,hdm_for_passthrough=true \
+     -device cxl-rp,port=0,bus=cxl.1,id=root_port13,chassis=0,slot=2 \
+     -device cxl-type3,bus=root_port13,volatile-memdev=vmem0,id=cxl-vmem0 \
+     -M cxl-fmw.0.targets.0=cxl.1,cxl-fmw.0.size=4G"
+
+
 FM="-object memory-backend-file,id=cxl-mem1,mem-path=/tmp/t3_cxl1.raw,size=256M \
  -object memory-backend-file,id=cxl-lsa1,mem-path=/tmp/t3_lsa1.raw,size=1M \
  -object memory-backend-file,id=cxl-mem2,mem-path=/tmp/t3_cxl2.raw,size=512M \
@@ -95,7 +102,10 @@ SW="-object memory-backend-file,id=cxl-mem0,share=on,mem-path=/tmp/cxltest.raw,s
 
 def find_topology(top):
     if top.upper() == "RP1":
+        print("hello\n")
         return RP1
+    elif top.upper() == "VM1":
+        return VM1
     elif top.upper() == "FM":
         return FM
     elif top.upper() == "FM_DCD":
